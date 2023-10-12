@@ -25,7 +25,6 @@
           android:layout_height="wrap_content"
           android:padding="8dp"
           android:layout_centerVertical="true"
-
           >
           <TextView
               android:id="@+id/roll"
@@ -47,7 +46,7 @@
           <TextView
               android:id="@+id/status"
               android:layout_alignParentRight="true"
-              android:layout_marginRight="36dp"
+              android:layout_marginRight="25dp"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:text="P"
@@ -55,6 +54,19 @@
               android:textSize="20sp"
               android:textStyle="bold"/>
 
+
+          <Button
+              android:id="@+id/deleteButton"
+              android:layout_alignBaseline="@id/name"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentEnd="true"
+              android:layout_centerVertical="true"
+              android:layout_marginEnd="60dp"
+              android:layout_marginBottom="10dp"
+              android:text="Delete"
+              android:textColor="#FF0000"
+              android:background="@drawable/delete_button_background" />
 
 
       </RelativeLayout>

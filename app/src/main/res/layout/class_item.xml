@@ -36,7 +36,16 @@
             android:textColor="#878787"
             ></TextView>
     </LinearLayout>
-
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="60dp"
+        android:text="Delete"
+        android:textColor="#FF0000"
+        android:background="@drawable/delete_button_background"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true" />
 </RelativeLayout>
 
 

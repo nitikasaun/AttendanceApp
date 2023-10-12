@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +20,8 @@ import java.util.ArrayList;
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentViewHolder> {
     ArrayList<StudentItem> studentItems;
     Context context;
+
+    int clickedPosition = -1;
 
     private OnItemClickListener onItemClickListener;
     public interface  OnItemClickListener{
@@ -34,11 +38,12 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
     }
 
 
-    public static class StudentViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    public static class StudentViewHolder extends RecyclerView.ViewHolder{
         TextView roll;
         TextView name;
         TextView status;
         CardView cardView;
+        Button deleteButton;
 
 
         public StudentViewHolder(@NonNull View itemView, OnItemClickListener onItemClickListener) {
@@ -47,31 +52,71 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             name = itemView.findViewById(R.id.name);
             status = itemView.findViewById(R.id.status);
             cardView = itemView.findViewById(R.id.cardview);
-            itemView.setOnClickListener(v->onItemClickListener.onClick(getAdapterPosition()));
-            itemView.setOnCreateContextMenuListener(this);
+            deleteButton = itemView.findViewById(R.id.deleteButton); // Initialize the delete button
+            itemView.setOnClickListener(v -> onItemClickListener.onClick(getAdapterPosition()));
+
+
+//            // Set the context menu for the CardView
+//            cardView.setOnCreateContextMenuListener((contextMenu, view, contextMenuInfo) -> {
+//                // Add your context menu options here
+//                contextMenu.setHeaderTitle("Student Options");
+//                contextMenu.add(0, R.id.edit, 0, "Edit");
+//                contextMenu.add(0, R.id.delete, 1, "Delete");
+//            });
+
+//            itemView.setOnClickListener(v -> onItemClickListener.onClick(getAdapterPosition()));
         }
 
-        @Override
-        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            contextMenu.add(getAdapterPosition(),0,0,"Edit");
-            contextMenu.add(getAdapterPosition(),1,0,"Delete");
-        }
+//        @Override
+//        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+//            // This is where you add context menu options for each item
+//            int position = getAdapterPosition(); // Get the position of the clicked item
+//
+//            // Add the menu options
+//            contextMenu.setHeaderTitle("Student Options");
+//            contextMenu.add(0, R.id.edit, 0, "Edit");
+//            contextMenu.add(0, R.id.delete, 1, "Delete");
+//
+//            super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
+//        }
     }
+
+//        @Override
+//        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+//            contextMenu.add(getAdapterPosition(),0,0,"Edit");
+//            contextMenu.add(getAdapterPosition(),1,0,"Delete");
+//        }
 
     @NonNull
     @Override
     public StudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView= LayoutInflater.from(parent.getContext()).inflate(R.layout.student_item,parent,false);
-        return new StudentViewHolder(itemView,onItemClickListener);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.student_item, parent, false);
+        itemView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+                contextMenu.add(0, R.id.edit, 0, "Edit");
+                contextMenu.add(0, R.id.delete, 0, "Delete");
+            }
+        });
+        return new StudentViewHolder(itemView, onItemClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull StudentViewHolder holder, int position) {
-        holder.roll.setText(studentItems.get(position).getRoll()+"");
+        holder.roll.setText(studentItems.get(position).getRoll() + "");
         holder.name.setText(studentItems.get(position).getName());
         holder.status.setText(studentItems.get(position).getStatus());
         holder.cardView.setCardBackgroundColor(getColor(position));
 
+        // Set an OnClickListener for the delete button
+        holder.deleteButton.setOnClickListener(v -> {
+            // Implement the delete logic here
+            int clickedPosition = holder.getAdapterPosition();
+            if (clickedPosition != RecyclerView.NO_POSITION) {
+                studentItems.remove(clickedPosition);
+                notifyItemRemoved(clickedPosition);
+            }
+        });
     }
 
     private int getColor(int position) {
@@ -89,4 +134,15 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
     public int getItemCount() {
         return studentItems.size();
     }
+    public void onClick(int position) {
+        clickedPosition = position;
+        // Notify that the item has been clicked.
+        if (onItemClickListener != null) {
+            onItemClickListener.onClick(position);
+        }
+    }
+    public int getClickedPosition() {
+        return clickedPosition;
+    }
+
 }

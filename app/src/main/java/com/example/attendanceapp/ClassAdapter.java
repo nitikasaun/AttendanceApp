@@ -5,6 +5,7 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,12 +36,16 @@ public static class ClassViewHolder extends RecyclerView.ViewHolder implements V
 
         TextView className;
         TextView subjectName;
+        Button deleteButton;
     public ClassViewHolder(@NonNull View itemView,OnItemClickListener onItemClickListener) {
         super(itemView);
         className = itemView.findViewById(R.id.class_tv);
         subjectName = itemView.findViewById(R.id.subject_tv);
+        deleteButton = itemView.findViewById(R.id.deleteButton); // Initialize the delete button
+        deleteButton.setOnClickListener(view -> {
         itemView.setOnClickListener(v->onItemClickListener.onClick(getAdapterPosition()));
         itemView.setOnCreateContextMenuListener(this);
+    });
     }
 
     @Override
@@ -62,6 +67,19 @@ public void onBindViewHolder(@NonNull ClassViewHolder holder, int position) {
     holder.className.setText(classItems.get(position).getClassName());
     holder.subjectName.setText(classItems.get(position).getSubjectName());
 
+    holder.itemView.setOnClickListener(v -> {
+        // Handle click on the entire class item (not delete button)
+        if (onItemClickListener != null) {
+            onItemClickListener.onClick(position);
+        }
+    });
+    holder.deleteButton.setOnClickListener(v -> {
+        int clickedPosition = holder.getAdapterPosition();
+        if (clickedPosition != RecyclerView.NO_POSITION) {
+            classItems.remove(clickedPosition);
+            notifyItemRemoved(clickedPosition);
+        }
+    });
 }
 
 @Override

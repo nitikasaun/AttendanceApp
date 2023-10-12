@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -184,16 +185,29 @@ public class StudentActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case 0:
-                showUpdateStudentDialog(item.getGroupId());
-                break;
-
-            case 1:
-                deleteStudent(item.getGroupId());
+    public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+        if (view.getId() == R.id.cardview) {
+            getMenuInflater().inflate(R.menu.student_context_menu, contextMenu);
         }
-        return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        // Get the position of the clicked student item
+        int position = item.getGroupId();
+
+        switch (item.getItemId()) {
+            case 0:
+                // Handle the Edit action, e.g., open a dialog to edit student details
+                showUpdateStudentDialog(position);
+                return true;
+            case 1:
+                // Handle the Delete action, e.g., show a confirmation dialog and delete the student
+                deleteStudent(position);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     private void showUpdateStudentDialog(int position) {
@@ -203,7 +217,6 @@ public class StudentActivity extends AppCompatActivity {
     }
 
     private void updateStudent(int position, String name) {
-
         dbHelper.updateStudent(studentItems.get(position).getSid(),name);
         studentItems.get(position).setName(name);
         adapter.notifyItemChanged(position);
