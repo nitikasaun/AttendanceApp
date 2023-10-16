@@ -20,6 +20,7 @@ import java.util.ArrayList;
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentViewHolder> {
     ArrayList<StudentItem> studentItems;
     Context context;
+    private DbHelper dbHelper;
 
     int clickedPosition = -1;
 
@@ -54,38 +55,8 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             cardView = itemView.findViewById(R.id.cardview);
             deleteButton = itemView.findViewById(R.id.deleteButton); // Initialize the delete button
             itemView.setOnClickListener(v -> onItemClickListener.onClick(getAdapterPosition()));
-
-
-//            // Set the context menu for the CardView
-//            cardView.setOnCreateContextMenuListener((contextMenu, view, contextMenuInfo) -> {
-//                // Add your context menu options here
-//                contextMenu.setHeaderTitle("Student Options");
-//                contextMenu.add(0, R.id.edit, 0, "Edit");
-//                contextMenu.add(0, R.id.delete, 1, "Delete");
-//            });
-
-//            itemView.setOnClickListener(v -> onItemClickListener.onClick(getAdapterPosition()));
         }
-
-//        @Override
-//        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-//            // This is where you add context menu options for each item
-//            int position = getAdapterPosition(); // Get the position of the clicked item
-//
-//            // Add the menu options
-//            contextMenu.setHeaderTitle("Student Options");
-//            contextMenu.add(0, R.id.edit, 0, "Edit");
-//            contextMenu.add(0, R.id.delete, 1, "Delete");
-//
-//            super.onCreateContextMenu(contextMenu, view, contextMenuInfo);
-//        }
     }
-
-//        @Override
-//        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-//            contextMenu.add(getAdapterPosition(),0,0,"Edit");
-//            contextMenu.add(getAdapterPosition(),1,0,"Delete");
-//        }
 
     @NonNull
     @Override
@@ -114,9 +85,14 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
             int clickedPosition = holder.getAdapterPosition();
             if (clickedPosition != RecyclerView.NO_POSITION) {
                 studentItems.remove(clickedPosition);
+                deleteStudent(clickedPosition);
                 notifyItemRemoved(clickedPosition);
             }
         });
+    }
+    private void deleteStudent(int position) {
+        dbHelper.deleteStudent(studentItems.get(position).getSid());
+        studentItems.remove(position);
     }
 
     private int getColor(int position) {

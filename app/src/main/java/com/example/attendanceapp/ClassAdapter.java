@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHolder> {
 ArrayList<ClassItem> classItems;
 Context context;
+DbHelper dbHelper;
 
 private OnItemClickListener onItemClickListener;
 public interface  OnItemClickListener{
@@ -77,11 +78,15 @@ public void onBindViewHolder(@NonNull ClassViewHolder holder, int position) {
         int clickedPosition = holder.getAdapterPosition();
         if (clickedPosition != RecyclerView.NO_POSITION) {
             classItems.remove(clickedPosition);
+            deleteClass(clickedPosition);
             notifyItemRemoved(clickedPosition);
         }
     });
 }
-
+    private void deleteClass(int position) {
+        dbHelper.deleteClass(classItems.get(position).getCid());
+        classItems.remove(position);
+    }
 @Override
 public int getItemCount() {
     return classItems.size();
